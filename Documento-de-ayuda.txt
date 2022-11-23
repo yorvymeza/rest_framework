@@ -1,0 +1,186 @@
+CRUD API REST con Django Rest Framework y Postman
+https://www.youtube.com/watch?v=47dnlEmdot4
+
+
+
+
+venv es el nombre del entorno que le vamos a dar 
+https://render.com/
+
+* Es un framewokr que esta encima de Django en el cual nos permite crear aplicaciones
+de forma sencilla
+
+Modulos que vamos usar en este curso 
+------------------------------------------
+
+1. django==4.1.3
+2. djangorestframework==3.14.0
+-------------------------------------------
+Para verificar que todo los modulos se instalaron 
+podemos utilizar el comando * pip freeze
+
+A new release of pip available
+Una nueva versión de pip disponible
+----------------------------------------------
+pip install -r requirements.txt 
+// DE ESTA MANERA CORREMOS EL requirements.txt DONDE VAN ESTAR LOS MODULOS QUE TENEMOS
+
+ Para crear un proyecto 
+-----------------------------
+1. django-admin startproject core . el punto es para indicarle que lo cree en el directorio 
+ otro nombre que tu quieras // core es una nomenclatura 
+ que le estamos dando a la primera aplicacion que se va ha crear... 
+ Es para iniciar Django
+
+
+2. python manage.py startapp blog 
+blog ES EL NOMBRE QUE LLEVA EL NOMBRE DEL PROYECTO...
+También se crea el modelo ya incluido de una vez...
+
+Registrar las aplicacion en el archivo de setting.py 
+
+INSTALLED_APPS = [
+ 'core',
+ 'project',
+ 'rest_framework',
+
+]
+-----------------------------------------------------
+
+El siguiente capitulo vamos a trabajar con los modelos de datos
+
+* Models
+Django Rest framework
+
+En esta seccion vamos aprender a crear un modelo 
+para crear nuetra tabla y luego crear nuestra API
+ya con la tabla creada de la base de datos...
+
+archivo models.py 
+
+class Project(models.Model):
+	title = models.CharField(max_length=200)
+	description = models.TextField()
+	technology = models.CharField(max_length=200)
+	created_at = models.DateTimeField(auto_now_add=True)
+
+
+
+TextField() // Es para un texto largo  
+
+* python manage.py makemigritions
+* paython manage.py migrate // Es para crear las tablas 
+
+-----------------------------------------------------
+
+El la siguiente seccion crearemos la API
+
+En la carpeta del proyecto creamos el archivo serializer.py
+
+from rest_framework import serializers
+
+from .models import Project // Este es el modelo que no sosotros creamos
+
+class PrjectSerializer
+
+serializers.py
+from rest_framework import serializers
+
+from .models import Project
+
+class ProjectSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Project
+		# fields = ('__all__')
+		fields = ('id', 'title', 'description', 'technology', 'created_at')
+		read_only_fields = ('created_at') 
+		# Me va permitir el campo created_at no se modifique
+
+
+------------------------------------------------------------------------
+Despues viene el ViewSet 
+El ViewSet nos va permitir que podra consultar mi serializers.py 
+
+
+Dentro del project vamos a crear un archivo llamado api.py 
+
+from .models import Project
+from rest_framework import viewsets, permissions
+from .serializers import ProjectSerialiazer
+
+// Creamos una clase 
+class ProjectViewSet(viewsets.ModelsViewSet):
+          // Project.objects.all() 
+          Nos permite consultar todos los datos de una tabla 
+          // El queryset es el conjunto de datos 
+	queryset = Project.objects.all()
+         // Esto son los permisos
+	permission_classes = [permissions.AllowAny] 
+        #AllowAny Cualquier aplicacion cliente va poder solitar datos a nuestro servidor
+        serialiazer_class = ProjectSerialzer
+
+
+
+---------------------------------------------------------------
+Despues vamos a crear un archivo llamado urls.py para las rutas
+en las misma carpeta del proyecto 
+
+from rest_framework import routers
+from .api import ProjectViewSet
+# Este ProjectViewSet lo pasamos como parametro en
+# en la ruta
+router = routers.DefaultRouter()
+
+router.register('api/projects', ProjectViewSet, 'projects')
+
+#Esto va genera las url
+
+urlpatterns = router.urls
+
+-----------------------------------------------------
+* Ya hacimos la peticion get y la peticion post 
+
+
+Vamos usar un cliente rest 
+imsomnia, postman,  thunder client 
+
+
+https://www.youtube.com/watch?v=bLidW4iByqo
+Django with Data Science | Data science Python course
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
